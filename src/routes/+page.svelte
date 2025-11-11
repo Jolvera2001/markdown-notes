@@ -27,7 +27,7 @@
   // }
 </script>
 
-<main class="container">
+<main>
   <textarea bind:value={content}></textarea>
-  <div>{@html markdown}</div>
+  <article class="prose">{@html markdown}</article>
 </main>
