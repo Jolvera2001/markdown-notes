@@ -1,4 +1,5 @@
 use std::{path::{Path, PathBuf}, sync::Mutex};
+use serde::{Deserialize, Serialize};
 use tokio::{fs::{read_to_string, write, read_dir}};
 
 // TODO: Add Result<> returns for proper error handling
@@ -42,7 +43,7 @@ impl DocumentState {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Document {
     pub path: PathBuf,
     pub name: String,

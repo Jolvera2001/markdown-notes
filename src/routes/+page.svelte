@@ -17,8 +17,13 @@
     })
   );
 
+  let docs = $state();
   let content = $state("");
   let markdown = $derived(marked.parse(content));
+
+  async function load_files() {
+    docs = await invoke("load_files");
+  }
 
   // async function greet(event: Event) {
   //   event.preventDefault();
