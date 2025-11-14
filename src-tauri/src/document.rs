@@ -15,10 +15,10 @@ pub struct DocumentState {
 }
 
 impl DocumentState {
-    pub fn new() -> Self {
-        Self {
+    pub fn new() -> Result<Self, AppError> {
+        Ok(Self {
             documents: Mutex::new(Vec::new()),
-        }
+        })
     }
 
     pub async fn fetch_test_files(&self, path: &str) -> Result<(), AppError> {
@@ -34,7 +34,7 @@ impl DocumentState {
                     if ext == "md" {
                         let doc_name = entry.file_name();
 
-                        let doc = Document::new(path, doc_name.into_string()?).await;
+                        let doc = Document::new(path, doc_name.into_string()?).await?;
                         files.push(doc);
                     }
                 }
@@ -60,15 +60,15 @@ pub struct Document {
 }
 
 impl Document {
-    pub async fn new(path: PathBuf, name: String) -> Self {
-        let content = read_to_string(&path).await.unwrap();
+    pub async fn new(path: PathBuf, name: String) -> Result<Self, AppError> {
+        let content = read_to_string(&path).await?;
 
-        Self {
+        Ok(Self {
             path,
             name: name.to_string(),
             content,
             is_dirty: false,
-        }
+        })
     }
 
     pub async fn save(&mut self, new_content: &str) -> Result<(), AppError> {
