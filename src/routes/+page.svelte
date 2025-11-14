@@ -4,17 +4,17 @@
   import hljs from "highlight.js";
   import { Marked } from "marked";
 
-  import 'highlight.js/styles/github-dark.css';
+  import "highlight.js/styles/github-dark.css";
 
   const marked = new Marked(
     markedHighlight({
-      emptyLangClass: 'hljs',
-      langPrefix: 'hljs language-',
+      emptyLangClass: "hljs",
+      langPrefix: "hljs language-",
       highlight(code, lang, info) {
-        const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+        const language = hljs.getLanguage(lang) ? lang : "plaintext";
         return hljs.highlight(code, { language }).value;
-      }
-    })
+      },
+    }),
   );
 
   let docs = $state<Document[] | null>(null);
@@ -23,7 +23,12 @@
   let markdown = $derived(marked.parse(content));
 
   async function load_files() {
-    docs = await invoke<Document[]>("load_files");
+    try {
+      docs = await invoke<Document[]>("load_files");
+      content = docs[0].content;
+    } catch (error) {
+      console.log("something went wrong", error);
+    }
   }
 
   // async function greet(event: Event) {
@@ -34,6 +39,7 @@
 </script>
 
 <main>
+  <button onclick={load_files}>Load Markdown</button>
   <textarea bind:value={content}></textarea>
   <article class="prose">{@html markdown}</article>
 </main>
