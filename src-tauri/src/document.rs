@@ -1,6 +1,9 @@
-use std::{path::{Path, PathBuf}, sync::Mutex};
 use serde::{Deserialize, Serialize};
-use tokio::{fs::{read_to_string, write, read_dir}};
+use std::{
+    path::{Path, PathBuf},
+    sync::Mutex,
+};
+use tokio::fs::{read_dir, read_to_string, write};
 
 // TODO: Add Result<> returns for proper error handling
 
@@ -11,15 +14,19 @@ pub struct DocumentState {
 impl DocumentState {
     pub fn new() -> Self {
         Self {
-            documents: Mutex::new(Vec::new())
+            documents: Mutex::new(Vec::new()),
         }
     }
 
     pub async fn fetch_test_files(&self) {
         let mut files = Vec::new();
 
-        let mut entries = read_dir(PathBuf::from(r"C:\LocalProjects\rust\markdown-notes\src-tauri\test_files")).await.unwrap();
-        
+        let mut entries = read_dir(PathBuf::from(
+            r"C:\LocalProjects\rust\markdown-notes\src-tauri\test_files",
+        ))
+        .await
+        .unwrap();
+
         while let Some(entry) = entries.next_entry().await.unwrap() {
             let path = entry.path();
 
