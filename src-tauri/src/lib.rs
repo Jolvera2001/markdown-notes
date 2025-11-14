@@ -1,8 +1,10 @@
 mod document;
+mod app_error;
 
 use tauri::State;
 
 use crate::document::{Document, DocumentState};
+use crate::app_error::AppError;
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
@@ -11,8 +13,8 @@ fn greet(name: &str) -> String {
 }
 
 #[tauri::command]
-async fn load_files(documents: State<'_, DocumentState>) -> Result<Vec<Document>, String> {
-    documents.fetch_test_files().await; // TODO: add .map_err for proper error handling
+async fn load_files(directory_path: String, documents: State<'_, DocumentState>) -> Result<Vec<Document>, String> {
+    documents.fetch_test_files(&directory_path).await; // TODO: add .map_err for proper error handling
     Ok(documents.get_documents())
 }
 

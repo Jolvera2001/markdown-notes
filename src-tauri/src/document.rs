@@ -1,9 +1,12 @@
 use serde::{Deserialize, Serialize};
 use std::{
+    io::Error,
     path::{Path, PathBuf},
     sync::Mutex,
 };
 use tokio::fs::{read_dir, read_to_string, write};
+
+use crate::app_error::AppError;
 
 // TODO: Add Result<> returns for proper error handling
 
@@ -18,16 +21,12 @@ impl DocumentState {
         }
     }
 
-    pub async fn fetch_test_files(&self) {
+    pub async fn fetch_test_files(&self, path: &str) -> Result<(), AppError> {
         let mut files = Vec::new();
 
-        let mut entries = read_dir(PathBuf::from(
-            r"C:\LocalProjects\rust\markdown-notes\src-tauri\test_files",
-        ))
-        .await
-        .unwrap();
+        let mut entries = read_dir(PathBuf::from(path)).await?;
 
-        while let Some(entry) = entries.next_entry().await.unwrap() {
+        while let Some(entry) = entries.next_entry().await? {
             let path = entry.path();
 
             if path.is_file() {
@@ -35,7 +34,7 @@ impl DocumentState {
                     if ext == "md" {
                         let doc_name = entry.file_name();
 
-                        let doc = Document::new(path, doc_name.into_string().unwrap()).await;
+                        let doc = Document::new(path, doc_name.into_string()?).await;
                         files.push(doc);
                     }
                 }
@@ -43,6 +42,8 @@ impl DocumentState {
         }
 
         self.documents.lock().unwrap().extend(files);
+
+        Ok(())
     }
 
     pub fn get_documents(&self) -> Vec<Document> {
@@ -70,15 +71,17 @@ impl Document {
         }
     }
 
-    pub async fn save(&mut self, new_content: &str) -> std::io::Result<()> {
-        let result = write(&self.path, new_content).await;
+    pub async fn save(&mut self, new_content: &str) -> Result<(), AppError> {
+        write(&self.path, new_content).await?;
+
         self.content = new_content.to_string();
         self.is_dirty = false;
 
-        result
+        Ok(())
     }
 
-    pub fn dirty(&mut self) {
+    pub fn dirty(&mut self) -> Result<(), Error> {
         self.is_dirty = true;
+        Ok(())
     }
 }
