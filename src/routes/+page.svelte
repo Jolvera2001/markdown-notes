@@ -1,8 +1,9 @@
 <script lang="ts">
   import { markedHighlight } from "marked-highlight";
   import { invoke } from "@tauri-apps/api/core";
-  import hljs from "highlight.js";
+  import { open } from "@tauri-apps/plugin-dialog"
   import { Marked } from "marked";
+  import hljs from "highlight.js";
 
   import "highlight.js/styles/github-dark.css";
 
@@ -24,8 +25,12 @@
 
   async function load_files() {
     try {
-      docs = await invoke<Document[]>("load_files");
-      content = docs[0].content;
+      const path = await open({
+        multiple: false,
+        directory: true,
+      });
+      docs = await invoke<Document[]>("load_files", { directoryPath: path });
+      console.log(docs)
     } catch (error) {
       console.log("something went wrong", error);
     }

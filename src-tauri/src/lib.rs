@@ -21,7 +21,7 @@ async fn load_files(
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
-        .manage(DocumentState::new())
+        .manage(DocumentState::new().unwrap())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![load_files])
         .run(tauri::generate_context!())
