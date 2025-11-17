@@ -5,6 +5,8 @@
   import { Marked } from "marked";
   import hljs from "highlight.js";
 
+  import Sidebar from "../components/editor/Sidebar.svelte";
+
   import "highlight.js/styles/github-dark.css";
 
   const marked = new Marked(
@@ -19,9 +21,13 @@
   );
 
   let docs = $state<Document[] | null>(null);
+  let selectedDocument = $state<Document | null>(null);
 
-  let content = $state("");
-  let markdown = $derived(marked.parse(content));
+  function select_document(index: number) {
+    if (docs) {
+      selectedDocument = docs[index];
+    }
+  }
 
   async function load_files() {
     try {
@@ -44,7 +50,8 @@
 </script>
 
 <main>
-  <button onclick={load_files}>Load Markdown</button>
+  <Sidebar documents={docs} />
+  <!-- <button onclick={load_files}>Load Markdown</button>
   <textarea bind:value={content}></textarea>
-  <article class="prose">{@html markdown}</article>
+  <article class="prose">{@html markdown}</article> -->
 </main>
