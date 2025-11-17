@@ -50,7 +50,7 @@
 </script>
 
 <main>
-  <Sidebar documents={docs} />
+  <Sidebar documents={docs} onDocumentSelected={select_document}/>
   <!-- <button onclick={load_files}>Load Markdown</button>
   <textarea bind:value={content}></textarea>
   <article class="prose">{@html markdown}</article> -->
