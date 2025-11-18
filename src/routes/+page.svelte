@@ -29,7 +29,7 @@
 </script>
 
 <main>
-  <div class="flex ">
+  <div class="flex divide-x-1">
     <button onclick={load_files}>Load Markdown</button>
     <Sidebar documents={docs} onDocumentSelected={select_document}/>
     <Editor document={selectedDocument} />

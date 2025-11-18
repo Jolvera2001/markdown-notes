@@ -8,7 +8,7 @@
     } = $props();
 </script>
 
-<aside class="w-64 h-screen border-1 border-gray-400 bg-gray-300">
+<aside class="w-64 h-screen border-gray-400 bg-gray-300">
     <nav class="p-4">
         {#if documents == null}
             <p>No documents loaded</p>
