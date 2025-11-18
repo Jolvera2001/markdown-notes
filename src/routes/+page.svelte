@@ -7,6 +7,7 @@
 
   let docs = $state<Document[] | null>(null);
   let selectedDocument = $state<Document | null>(null);
+  $inspect(docs)
 
   function select_document(index: number) {
     if (docs) {
